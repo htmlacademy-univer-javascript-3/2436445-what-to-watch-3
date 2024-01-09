@@ -8,7 +8,7 @@ import { players } from './mocks/players.ts';
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );
-const film = films?.[1];
+const film = films?.[0];
 
 root.render(
   <React.StrictMode>
