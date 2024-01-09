@@ -1,75 +1,60 @@
-import { FilmFullType } from '../../types/film.ts';
-import Overview from './overview.tsx';
-import { useState } from 'react';
-import Details from './details.tsx';
-import Reviews from './reviews.tsx';
-import { CommentType } from '../../types/filmReview.ts';
+import {FimlType} from '../../types/FilmType';
+import {useState} from 'react';
+import {Tab} from '../../consts';
+import OverviewTab from './overview-tab';
+import DetailsTab from './details-tab';
+import ReviewsTab from './reviews-tab';
 
-interface TabsProps {
-  film: FilmFullType;
-  commentsFilms: CommentType[];
-}
+type TabsProps = {
+  film: FimlType,
+};
 
-interface FilmNavProps {
-  title: string;
-  view: JSX.Element;
-}
-
-const Tabs = ({ film, commentsFilms }: TabsProps) => {
-  const [titleNav, setTitleNav] = useState('Overview');
-  const filmNav: FilmNavProps[] = [
-    {
-      title: 'Overview',
-      view: <Overview film={film} />,
-    },
-    {
-      title: 'Details',
-      view: <Details film={film} />,
-    },
-    {
-      title: 'Reviews',
-      view: <Reviews commentsFilm={commentsFilms} />,
-    },
-  ];
-  const activeNav = filmNav.filter(({ title }) => title === titleNav)[0];
+function Tabs(props: TabsProps): JSX.Element {
+  const [currentTab, setCurrentTab] = useState<Tab>(Tab.OVERVIEW);
   return (
-    <div className="film-card__wrap film-card__translate-top">
-      <div className="film-card__info">
-        <div className="film-card__poster film-card__poster--big">
-          <img
-            src={film.posterImage}
-            alt={film.name}
-            width="218"
-            height="327"
-          />
-        </div>
-
-        <div className="film-card__desc">
-          <nav className="film-nav film-card__nav">
-            <ul className="film-nav__list">
-              {filmNav.map((nav) => (
-                <li
-                  key={`key_${nav.title}`}
-                  className={`film-nav__item ${
-                    nav.title === titleNav ? 'film-nav__item--active' : ''
-                  }`}
-                  onClick={() => setTitleNav(nav.title)}
-                >
-                  <a
-                    /*href={`#${nav.title.toLowerCase().replace(' ', '_')}`}*/
-                    className="film-nav__link"
-                  >
-                    {nav.title}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-          {activeNav.view}
-        </div>
-      </div>
+    <div className="film-card__desc">
+      <nav className="film-nav film-card__nav">
+        <ul className="film-nav__list">
+          <li className={`film-nav__item ${currentTab === Tab.OVERVIEW && 'film-nav__item--active'}`}>
+            <a href="#overviews" className="film-nav__link" data-testid='overview-tab' onClick={
+              (evt) => {
+                evt.preventDefault();
+                setCurrentTab(Tab.OVERVIEW);
+              }
+            }
+            >
+              {Tab.OVERVIEW}
+            </a>
+          </li>
+          <li className={`film-nav__item ${currentTab === Tab.DETAILS && 'film-nav__item--active'}`}>
+            <a href="#details" className="film-nav__link" data-testid='details-tab' onClick={
+              (evt) => {
+                evt.preventDefault();
+                setCurrentTab(Tab.DETAILS);
+              }
+            }
+            >
+              {Tab.DETAILS}
+            </a>
+          </li>
+          <li className={`film-nav__item ${currentTab === Tab.REVIEWS && 'film-nav__item--active'}`}>
+            <a href="#reviews" className="film-nav__link" data-testid='reviews-tab' onClick={
+              (evt) => {
+                evt.preventDefault();
+                setCurrentTab(Tab.REVIEWS);
+              }
+            }
+            >
+              {Tab.REVIEWS}
+            </a>
+          </li>
+        </ul>
+      </nav>
+      {currentTab === Tab.OVERVIEW && <OverviewTab film={props.film} />}
+      {currentTab === Tab.DETAILS && <DetailsTab film={props.film} />}
+      {currentTab === Tab.REVIEWS && <ReviewsTab />}
     </div>
   );
-};
+}
 
 export default Tabs;

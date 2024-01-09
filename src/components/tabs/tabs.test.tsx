@@ -1,64 +1,47 @@
-import { render, screen } from '@testing-library/react';
-import Details from './details.tsx';
-import { testCommentsFilm, testFilm } from '../../utils/mocks.ts';
-import {
-  runTimeSelector,
-  starringToStringColumn,
-} from '../filmCard/utils.ts';
-import Reviews from './reviews.tsx';
+import {fireEvent, render, screen} from '@testing-library/react';
+import {films} from '../../mocks/films';
+import reviews from '../../mocks/reviews';
+import Tabs from './tabs';
+import {createAPI} from '../../services/api';
+import thunk, {ThunkDispatch} from 'redux-thunk';
+import {configureMockStore} from '@jedmao/redux-mock-store';
+import {StateType} from '../../types/StateType';
+import {Action} from '@reduxjs/toolkit';
+import {ReducerType} from '../../consts';
+import {Provider} from 'react-redux';
 
-describe('Component: tabs', () => {
-  const film = testFilm;
-  const commentsFilm = testCommentsFilm;
-  describe('Component: details', () => {
-    it('should render correct', () => {
-      render(<Details film={film} />);
+const api = createAPI();
+const middlewares = [thunk.withExtraArgument(api)];
+const mockFilm = films[0];
+const mockStore = configureMockStore<StateType, Action, ThunkDispatch<StateType, typeof api, Action>>(middlewares);
+const mockReviews = reviews;
 
-      const directorContainer = screen.getByText('Director').parentElement;
-      const starringContainer = screen.getByText('Starring').parentElement;
-      const runTimeContainer = screen.getByText('Run Time').parentElement;
-      const genreContainer = screen.getByText('Genre').parentElement;
-      const releasedContainer = screen.getByText('Released').parentElement;
-
-      expect(directorContainer).toBeInTheDocument();
-      expect(directorContainer?.children[1].textContent).toBe(film.director);
-
-      expect(starringContainer).toBeInTheDocument();
-      expect(starringContainer?.children[1].textContent).toBe(
-        starringToStringColumn(film.starring),
-      );
-
-      expect(runTimeContainer).toBeInTheDocument();
-      expect(runTimeContainer?.children[1].textContent).toBe(
-        runTimeSelector(film.runTime),
-      );
-
-      expect(genreContainer).toBeInTheDocument();
-      expect(genreContainer?.children[1].textContent).toBe(film.genre);
-
-      expect(releasedContainer).toBeInTheDocument();
-      expect(releasedContainer?.children[1].textContent).toBe(
-        film.released.toString(),
-      );
-    });
+describe('Component: Tabs', () => {
+  it('should render OverviewTab correctly', () => {
+    render(<Tabs film={mockFilm} />);
+    expect(screen.getByText(mockFilm.rating)).toBeInTheDocument();
   });
 
-  describe('Component: reviews', () => {
-    it('should render correct', () => {
-      render(<Reviews commentsFilm={commentsFilm} />);
+  it('should render DetailsTab correctly', () => {
+    render(<Tabs film={mockFilm} />);
+    const detailsButton = screen.getByTestId('details-tab');
+    fireEvent.click(detailsButton);
+    expect(screen.getByText(mockFilm.released)).toBeInTheDocument();
+  });
 
-      const commentsFilmFirstColumn = screen.getByTestId(
-        'film-card__reviews-col__first',
-      );
-      const commentFilmSecondColumn = screen.getByTestId(
-        'film-card__reviews-col__second',
-      );
-      const countReviews =
-        (commentsFilmFirstColumn.children.length +
-          commentFilmSecondColumn.children.length) |
-        0;
-
-      expect(countReviews).toBe(commentsFilm.length);
+  it('should render ReviewsTab correctly', () => {
+    const store = mockStore({
+      [ReducerType.Film]: {
+        comments: mockReviews,
+      },
     });
+    render(
+      <Provider store={store}>
+        <Tabs film={mockFilm} />
+      </Provider>
+    );
+    const reviewsButton = screen.getByTestId('reviews-tab');
+    fireEvent.click(reviewsButton);
+    expect(screen.getByText(reviews[0].comment)).toBeInTheDocument();
   });
 });
