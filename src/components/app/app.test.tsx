@@ -1,138 +1,64 @@
-import { render, screen } from '@testing-library/react';
-import { MemoryHistory, createMemoryHistory } from 'history';
-import { AuthorizationStatus, AppRoute } from '../../const';
 import App from './app';
-import { makeFakeStore } from '../../utils/mocks';
-import { withHistory, withStore } from '../../utils/mocks-component.tsx';
+import thunk from 'redux-thunk';
+import {Provider} from 'react-redux';
+import {createAPI} from '../../services/api';
+import {MemoryRouter} from 'react-router-dom';
+import {render, screen} from '@testing-library/react';
+import {configureMockStore} from '@jedmao/redux-mock-store';
+import {films} from '../../mocks/films';
+import {ALL_GENRES, AppRoute, AuthorizationStatus, ReducerType} from '../../consts';
 
-describe('Application Routing', () => {
-  let mockHistory: MemoryHistory;
+const middlewares = [thunk.withExtraArgument(createAPI())];
+const mockStore = configureMockStore(middlewares);
+const mockFilm = films[0];
+const mockFilms = films;
+const store = mockStore({
+  [ReducerType.User]: {
+    authorizationStatus: AuthorizationStatus.Authorized,
+    avatar: null,
+  },
+  [ReducerType.Film]: {
+    film: mockFilm,
+    reviews: [],
+    similar: [mockFilms[2], mockFilms[3]],
+  },
+  [ReducerType.Main]: {
+    films: mockFilms,
+    filteredFilms: [mockFilms[4], mockFilms[5]],
+    favoriteFilms: [mockFilms[6], mockFilms[7]],
+    favoriteFilmsLength: 0,
+    currentGenre: ALL_GENRES,
+    shownCount: 0,
+    dataIsLoading: false,
+    promo: mockFilm,
+  },
+});
+const routes : (AppRoute | string)[] = [AppRoute.Main];
+const fakeApp = (
+  <Provider store={store}>
+    <MemoryRouter initialEntries={routes}>
+      <App />
+    </MemoryRouter>
+  </Provider>
+);
 
-  beforeEach(() => {
-    mockHistory = createMemoryHistory();
-  });
-
-  it('should render "PromoFilm" when user navigate to "/"', () => {
-    const withHistoryComponent = withHistory(<App />, mockHistory);
-    const fakeStore = makeFakeStore();
-    const { withStoreComponent } = withStore(withHistoryComponent, fakeStore);
-    mockHistory.push(AppRoute.Main);
-
-    render(withStoreComponent);
-
-    expect(screen.getByTestId('promo_film-card__title')).toBeInTheDocument();
-    expect(screen.getByTestId('promo_film-card__title').textContent).toBe(
-      fakeStore.PROMO_FILM.data?.name,
-    );
-  });
-
-  it('should render "AuthScreen" when user navigate to "/login"', () => {
-    const withHistoryComponent = withHistory(<App />, mockHistory);
-    const { withStoreComponent } = withStore(
-      withHistoryComponent,
-      makeFakeStore(),
-    );
-    mockHistory.push(AppRoute.SignIn);
-
-    render(withStoreComponent);
-
-    expect(
-      screen.getByTestId('user-block__header__sign-in'),
-    ).toBeInTheDocument();
-    expect(screen.getByLabelText(/Email address/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Password/i)).toBeInTheDocument();
-  });
-
-  it('should render "AuthScreen" when user navigate to "/login" not auth', () => {
-    const withHistoryComponent = withHistory(<App />, mockHistory);
-    const { withStoreComponent } = withStore(
-      withHistoryComponent,
-      makeFakeStore(),
-    );
-    mockHistory.push(AppRoute.MyList);
-
-    render(withStoreComponent);
-
-    expect(
-      screen.getByTestId('user-block__header__sign-in'),
-    ).toBeInTheDocument();
-    expect(screen.getByLabelText(/Email address/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Password/i)).toBeInTheDocument();
-  });
-
-  it('should render "MyList" when user navigate to "/mylist"', () => {
-    const withHistoryComponent = withHistory(<App />, mockHistory);
-    const fakeStore = makeFakeStore({
-      USER: {
-        authorizationStatus: {
-          data: AuthorizationStatus.Auth,
-          error: null,
-          loading: false,
-        },
-        userData: {
-          error: {
-            property: [],
-            messages: [],
-          },
-          data: null,
-          loading: false,
-        },
-      },
-    });
-    const { withStoreComponent } = withStore(withHistoryComponent, fakeStore);
-    mockHistory.push(AppRoute.MyList);
-
-    render(withStoreComponent);
-
-    expect(screen.getByText(/My list/i)).toBeInTheDocument();
-    expect(screen.getByTestId('catalog__films').children.length).toBe(fakeStore.FAVORITE_FILMS.data.length);
-  });
-
-  it('should render "MoviePage" when user navigate to "/films/{id}" not auth', () => {
-    const withHistoryComponent = withHistory(<App />, mockHistory);
-    const fakeStore = makeFakeStore();
-    const { withStoreComponent } = withStore(
-      withHistoryComponent,
-      fakeStore
-    );
-    mockHistory.push(AppRoute.Film(fakeStore.FILM.film.data?.id));
-
-    render(withStoreComponent);
-
+describe('Component: App', () => {
+  it('should render "Main page" if navigate to "/"', () => {
+    render(fakeApp);
     expect(screen.getByText(/Play/i)).toBeInTheDocument();
-    expect(screen.getByText(/Details/i)).toBeInTheDocument();
-    expect(screen.getByText(/Reviews/i)).toBeInTheDocument();
-    expect(screen.getByText(/Overview/i)).toBeInTheDocument();
-    expect(screen.getByText(/More like this/i)).toBeInTheDocument();
+    expect(screen.getByText(/All genres/i)).toBeInTheDocument();
   });
 
-  it('should render "MoviePage" when user navigate to "/films/{id}" auth', () => {
-    const withHistoryComponent = withHistory(<App />, mockHistory);
-    const fakeStore = makeFakeStore({
-      USER: {
-        authorizationStatus: {
-          data: AuthorizationStatus.Auth,
-          error: null,
-          loading: false,
-        },
-        userData: {
-          error: {
-            property: [],
-            messages: [],
-          },
-          data: null,
-          loading: false,
-        },
-      },
-    });
-    const { withStoreComponent } = withStore(
-      withHistoryComponent,
-      fakeStore
-    );
-    mockHistory.push(AppRoute.Film(fakeStore.FILM.film.data?.id));
+  it('should render Main page if navigate to "/login" when authorized', () => {
+    routes.push(AppRoute.SignIn);
+    render(fakeApp);
+    expect(screen.getByText(/Play/i)).toBeInTheDocument();
+    expect(screen.getByText(/All genres/i)).toBeInTheDocument();
+  });
 
-    render(withStoreComponent);
-
+  it('should render Film page if navigate to "/films/{id}"', () => {
+    routes.push('/films/1');
+    render(fakeApp);
     expect(screen.getByText(/Play/i)).toBeInTheDocument();
     expect(screen.getByText(/Details/i)).toBeInTheDocument();
     expect(screen.getByText(/Reviews/i)).toBeInTheDocument();
@@ -142,61 +68,28 @@ describe('Application Routing', () => {
     expect(screen.getByText(/More like this/i)).toBeInTheDocument();
   });
 
-  it('should render "Player" when user navigate to "/player/{id}"', () => {
-    const withHistoryComponent = withHistory(<App />, mockHistory);
-    const fakeStore = makeFakeStore();
-    const { withStoreComponent } = withStore(
-      withHistoryComponent,
-      fakeStore
-    );
-    mockHistory.push(AppRoute.Player(fakeStore.FILM.film.data?.id));
-
-    render(withStoreComponent);
+  it('should render Player page if navigate to "/player/{id}"', () => {
+    routes.push('/player/1');
+    render(fakeApp);
     expect(screen.getByText(/Exit/i)).toBeInTheDocument();
-    expect(screen.getByTestId('player__name').textContent).toBe(fakeStore.FILM.film.data?.name);
+    expect(screen.getByText(/Transpotting/i)).toBeInTheDocument();
   });
 
-  it('should render "AddReview" when user navigate to "/films/{id}/review"', () => {
-    const withHistoryComponent = withHistory(<App />, mockHistory);
-    const fakeStore = makeFakeStore({
-      USER: {
-        authorizationStatus: {
-          data: AuthorizationStatus.Auth,
-          error: null,
-          loading: false,
-        },
-        userData: {
-          error: {
-            property: [],
-            messages: [],
-          },
-          data: null,
-          loading: false,
-        },
-      },
-    });
-    const { withStoreComponent } = withStore(
-      withHistoryComponent,
-      fakeStore
-    );
-    mockHistory.push(AppRoute.AddReview(fakeStore.FILM.film.data?.id));
-
-    render(withStoreComponent);
-    expect(screen.getByText(/Post/i)).toBeInTheDocument();
+  it('should render Add review page if navigate to "/films/{id}/review"', () => {
+    routes.push('/films/1/review');
+    render(fakeApp);
+    expect(screen.getByText(/Add review/i)).toBeInTheDocument();
   });
 
-  it('should render "NotFoundScreen" when user navigate to non-existent route', () => {
-    const withHistoryComponent = withHistory(<App />, mockHistory);
-    const { withStoreComponent } = withStore(
-      withHistoryComponent,
-      makeFakeStore(),
-    );
-    const unknownRoute = '/unknown-route';
-    mockHistory.push(unknownRoute);
+  it('should render My list page if navigate to "/mylist"', () => {
+    routes.push(AppRoute.MyList);
+    render(fakeApp);
+    expect(screen.getByText(/My list/i)).toBeInTheDocument();
+  });
 
-    render(withStoreComponent);
-
-    expect(screen.getByText('404')).toBeInTheDocument();
-    expect(screen.getByText('Ты как сюда попал.')).toBeInTheDocument();
+  it('should render 404 not found page if navigate to not found route', () => {
+    routes.push('/itsnotfoundroute');
+    render(fakeApp);
+    expect(screen.getByText('404 Not Found')).toBeInTheDocument();
   });
 });

@@ -1,53 +1,54 @@
-import Main from '../../pages/main/main.tsx';
-import { Route, Routes } from 'react-router-dom';
-import { AppRoute, AuthorizationStatus } from '../../const.ts';
-import SignIn from '../../pages/signIn/signIn.tsx';
-import MyList from '../../pages/myList/myList.tsx';
-import PrivateRoute from '../privateRoute/privateRoute.tsx';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { useEffect } from 'react';
-import MoviePage from '../../pages/film/moviePage.tsx';
-import AddReview from '../../pages/addReview/addReview.tsx';
-import Player from '../../pages/player';
-import Error from '../error/error.tsx';
-import { authorizationStatusSelector } from '../../store/userProcess/selectors.ts';
-import { fetchFavoriteFilmsAction } from '../../store/api-actions.ts';
-import { HelmetProvider } from 'react-helmet-async';
+import MainPage from '../../pages/main-page/main-page';
+import {Route, Routes} from 'react-router-dom';
+import SignInPage from '../../pages/sign-in-page/sign-in-page';
+import FilmPage from '../../pages/film-page/film-page';
+import PlayerPage from '../../pages/player-page/player-page';
+import {AppRoute} from '../../consts';
+import PrivateRoute from '../private-route/private-route';
+import MyListPage from '../../pages/my-list-page/my-list-page';
+import AddReviewPage from '../../pages/add-review-page/add-review-page';
+import NotFoundPage from '../../pages/not-found-page/not-found-page';
 
 function App(): JSX.Element {
-  const dispatch = useAppDispatch();
-  const authorizationStatus = useAppSelector(authorizationStatusSelector);
-  useEffect(() => {
-    if (authorizationStatus === AuthorizationStatus.Auth) {
-      dispatch(fetchFavoriteFilmsAction());
-    }
-  }, [authorizationStatus, dispatch]);
   return (
-    <HelmetProvider>
-      <Routes>
-        <Route path={AppRoute.Main} element={<Main />} />
-        <Route path={AppRoute.SignIn} element={<SignIn />} />
-        <Route
-          path={AppRoute.MyList}
-          element={
-            <PrivateRoute authorizationStatus={AuthorizationStatus.Auth}>
-              <MyList />
-            </PrivateRoute>
-          }
-        />
-        <Route path={AppRoute.Film(':id')} element={<MoviePage />} />
-        <Route
-          path={AppRoute.AddReview(':id')}
-          element={
-            <PrivateRoute authorizationStatus={AuthorizationStatus.Auth}>
-              <AddReview />
-            </PrivateRoute>
-          }
-        />
-        <Route path={AppRoute.Player(':id')} element={<Player />} />
-        <Route path={AppRoute.Error} element={<Error />} />
-      </Routes>
-    </HelmetProvider>
+    <Routes>
+      <Route
+        path={AppRoute.Main}
+        element={<MainPage />}
+      />
+      <Route
+        path={AppRoute.Film}
+        element={<FilmPage />}
+      />
+      <Route
+        path={AppRoute.AddReview}
+        element={<AddReviewPage/>}
+      />
+      <Route
+        path={AppRoute.Player}
+        element={<PlayerPage/>}
+      />
+      <Route
+        path={AppRoute.SignIn}
+        element={<SignInPage/>}
+      />
+      <Route
+        path={AppRoute.MyList}
+        element={
+          <PrivateRoute>
+            <MyListPage/>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path={AppRoute.NotFound}
+        element={<NotFoundPage/>}
+      />
+      <Route
+        path='*'
+        element={<NotFoundPage/>}
+      />
+    </Routes>
   );
 }
 

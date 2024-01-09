@@ -1,14 +1,16 @@
-const AUTH_TOKEN_KEY_NAME = 'what_to_see-token';
+const AUTHORIZATION_TOKEN_KEY_NAME = 'what-to-watch-token';
 
-export const getToken = (): string => {
-  const token = localStorage.getItem(AUTH_TOKEN_KEY_NAME);
+export type Token = string;
+
+export const getToken = (): Token => {
+  const token = localStorage.getItem(AUTHORIZATION_TOKEN_KEY_NAME);
   return token ?? '';
 };
 
-export const saveToken = (token: string): void => {
-  localStorage.setItem(AUTH_TOKEN_KEY_NAME, token);
+export const saveToken = (token: Token): void => {
+  localStorage.setItem(AUTHORIZATION_TOKEN_KEY_NAME, token);
 };
 
 export const dropToken = (): void => {
-  localStorage.removeItem(AUTH_TOKEN_KEY_NAME);
+  localStorage.removeItem(AUTHORIZATION_TOKEN_KEY_NAME);
 };

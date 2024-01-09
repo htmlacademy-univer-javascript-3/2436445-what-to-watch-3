@@ -1,64 +1,41 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
+import { useEffect } from 'react';
+import { FimlType } from '../../types/FilmType';
 
-interface VideoPlayerProps {
-  imgPath: string;
-  videoPath: string;
+type VideoplayerProps = {
+  film: FimlType;
+  muted: boolean;
   isPlaying: boolean;
-}
+  width: number;
+  height: number;
+  needToLoop: boolean;
+};
 
-function VideoPlayer({
-  imgPath,
-  videoPath,
-  isPlaying,
-}: VideoPlayerProps): JSX.Element {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-
-  const handleDataLoaded = () => {
-    setIsLoaded(true);
-  };
-
+function Videoplayer(props: VideoplayerProps): JSX.Element {
+  const videoplayerRef = useRef<HTMLVideoElement | null>(null);
   useEffect(() => {
-    const playerElement = videoRef.current;
-
-    if (!playerElement) {
-      return;
-    }
-
-    playerElement.addEventListener('loadeddata', handleDataLoaded);
-
-    return () => {
-      playerElement.removeEventListener('loadeddata', handleDataLoaded);
-    };
-  }, []);
-
-  useEffect(() => {
-    const playerElement = videoRef.current;
-    if (!playerElement || !isLoaded) {
-      return;
-    }
-
-    const timerId = setTimeout(() => {
-      if (isPlaying && playerElement.paused) {
-        playerElement.play();
+    if (videoplayerRef.current !== null) {
+      if (props.isPlaying) {
+        videoplayerRef.current.play();
+        //TODO: videoplayerRef.current не определяется вначале при запуске походу
       }
-    }, 1000);
-
-    if (!isPlaying && playerElement.played) {
-      playerElement.load();
+      else {
+        videoplayerRef.current.load();
+      }
     }
-    return () => clearTimeout(timerId);
-  }, [isLoaded, isPlaying]);
+  }, [props.isPlaying]);
 
   return (
     <video
-      poster={imgPath}
-      src={videoPath}
-      ref={videoRef}
-      muted
-      style={{ width: 'inherit', height: 'inherit' }}
+      ref={videoplayerRef}
+      src={props.film.videoLink}
+      poster={props.film.posterImage}
+      muted={props.muted}
+      width={props.width}
+      height={props.height}
+      loop={props.needToLoop}
     />
   );
 }
 
-export default VideoPlayer;
+export default Videoplayer;

@@ -1,38 +1,15 @@
-import { Link } from 'react-router-dom';
-import { AppRoute } from '../../const.ts';
-import { useAppSelector } from '../../hooks';
-import { memo } from 'react';
-import { loadingStatusFilmsSelector } from '../../store/filmsProcess/selectors.ts';
+import {Link} from 'react-router-dom';
 
-interface LogoProps {
-  isLight: boolean;
-}
-
-export const Logo = ({ isLight }: LogoProps) => {
-  const isFilmsDataLoading = useAppSelector(loadingStatusFilmsSelector);
-  if (isFilmsDataLoading) {
-    return (
-      <div className="logo">
-        <span className={`logo__link ${isLight ? 'logo__link--light' : ''}`}>
-          <span className="logo__letter logo__letter--1">W</span>
-          <span className="logo__letter logo__letter--2">T</span>
-          <span className="logo__letter logo__letter--3">W</span>
-        </span>
-      </div>
-    );
-  }
+function Logo(): JSX.Element {
   return (
     <div className="logo">
-      <Link
-        className={`logo__link ${isLight ? 'logo__link--light' : ''}`}
-        to={AppRoute.Main}
-      >
+      <Link to={'/'} className="logo__link">
         <span className="logo__letter logo__letter--1">W</span>
         <span className="logo__letter logo__letter--2">T</span>
         <span className="logo__letter logo__letter--3">W</span>
       </Link>
     </div>
   );
-};
+}
 
-export default memo(Logo);
+export default Logo;
