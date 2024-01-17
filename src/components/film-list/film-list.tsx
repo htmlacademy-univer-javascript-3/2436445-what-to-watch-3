@@ -1,4 +1,4 @@
-import {FimlType} from '../../types/FilmType';
+import {FimlType} from '../../types/film.ts';
 import FilmCard from '../film-card/film-card';
 import {useState} from 'react';
 

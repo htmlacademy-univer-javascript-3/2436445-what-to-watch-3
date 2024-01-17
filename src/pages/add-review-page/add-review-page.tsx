@@ -32,9 +32,11 @@ function AddReviewPage(): JSX.Element {
           <nav className="breadcrumbs">
             <ul className="breadcrumbs__list">
               <li className="breadcrumbs__item">
+                {/* eslint-disable-next-line @typescript-eslint/restrict-template-expressions */}
                 <Link to={`/films/${film?.id}`} className="breadcrumbs__link">{film?.name}</Link>
               </li>
               <li className="breadcrumbs__item">
+                {/* eslint-disable-next-line @typescript-eslint/restrict-template-expressions */}
                 <Link to={`/films/${film?.id}/review`} className="breadcrumbs__link">Add review</Link>
               </li>
             </ul>
@@ -42,6 +44,7 @@ function AddReviewPage(): JSX.Element {
           <UserBlock />
         </header>
         <div className="film-card__poster film-card__poster--small">
+          {/* eslint-disable-next-line @typescript-eslint/restrict-template-expressions */}
           <img src={film?.posterImage} alt={`${film?.name} poster`} width="218" height="327" />
         </div>
       </div>

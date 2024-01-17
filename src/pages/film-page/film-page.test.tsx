@@ -7,13 +7,13 @@ import thunk from 'redux-thunk';
 import {films} from '../../mocks/films';
 import reviews from '../../mocks/reviews';
 import {createAPI} from '../../services/api';
-import {StateType} from '../../types/StateType';
+import {State} from '../../types/state.ts';
 import {AuthorizationStatus, ReducerType} from '../../consts';
 import FilmPage from './film-page';
 
 const api = createAPI();
 const middlewares = [thunk.withExtraArgument(api)];
-const mockStore = configureMockStore<StateType, Action, ThunkDispatch<StateType, typeof api, Action>>(middlewares);
+const mockStore = configureMockStore<State, Action, ThunkDispatch<State, typeof api, Action>>(middlewares);
 const mockFilms = films;
 const mockFilm = films[0];
 const mockReviews = reviews;
@@ -28,7 +28,7 @@ describe('Film page', () => {
       [ReducerType.Film]: {
         film: mockFilm,
         comments: mockReviews,
-        similar: mockFilms,
+        similarFilms: mockFilms,
       },
       [ReducerType.Main]: {
         films: mockFilms,
@@ -60,7 +60,7 @@ describe('Film page', () => {
       [ReducerType.Film]: {
         film: mockFilm,
         comments: mockReviews,
-        similar: mockFilms,
+        similarFilms: mockFilms,
       },
       [ReducerType.Main]: {
         films: mockFilms,

@@ -1,4 +1,4 @@
-import {FimlType} from '../../types/FilmType';
+import {FimlType} from '../../types/film.ts';
 import {Link} from 'react-router-dom';
 import {Dispatch, SetStateAction, useEffect, useState} from 'react';
 import Videoplayer from '../videoplayer/videoplayer';
@@ -24,7 +24,9 @@ function FilmCard(props: FilmCardProps): JSX.Element {
     if (isCardHovered) {
       setTimeout(() => stillHovered && setIsPlayingNow(true), DELAY_ON_HOVER_FILM_CARD);
     }
-    return(() => {stillHovered = false;});
+    return(() => {
+      stillHovered = false;
+    });
   }, [isCardHovered]);
 
   return (

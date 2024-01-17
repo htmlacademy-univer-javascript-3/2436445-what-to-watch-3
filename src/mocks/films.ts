@@ -1,4 +1,4 @@
-import {FimlType} from '../types/FilmType';
+import {FimlType} from '../types/film.ts';
 
 export const films: FimlType[] = [
   {

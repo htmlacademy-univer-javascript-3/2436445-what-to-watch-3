@@ -10,11 +10,11 @@ function PlayerPage(): JSX.Element {
   const playerElement = document.querySelector('.player');
   const dispatch = useAppDispatch();
   const [isPlaying, setIsPlaying] = useState(false);
-  const [timeLeft, setTimeLeft] = useState( 0);
-  const clickPlayButtonHandler = () => {
+  const [timeLeft, setTimeLeft] = useState(0);
+  const handlePlayButtonClick = () => {
     setIsPlaying(!isPlaying);
   };
-  const fullscreenHandler = () => {
+  const handleFullscreenClick = () => {
     if (document.fullscreenElement) {
       document.exitFullscreen();
     } else {
@@ -41,20 +41,22 @@ function PlayerPage(): JSX.Element {
     dispatch(getFilm(id.toString()));
   }, [id, dispatch]);
   useEffect(() => {
-    if (film)
-    {setTimeLeft(film?.runTime * 60);}
+    if (film) {
+      setTimeLeft(film?.runTime * 60);
+    }
   }, [film]);
   const getTimeLeft = () => {
     const bringTimeToFormat = (time: number) => time > 9 ? time : `0${time}`;
-    const hours = bringTimeToFormat(Math.floor(timeLeft / 60 / 60));
-    const minutes = bringTimeToFormat(Math.floor(timeLeft / 60 - Math.floor(timeLeft / 60 / 60) * 60));
-    const seconds = bringTimeToFormat(Math.floor(timeLeft % 60));
+    const hours = bringTimeToFormat(Math.floor(timeLeft / 60 / 60)).toString();
+    const minutes = bringTimeToFormat(Math.floor(timeLeft / 60 - Math.floor(timeLeft / 60 / 60) * 60)).toString();
+    const seconds = bringTimeToFormat(Math.floor(timeLeft % 60)).toString();
     const timeInActualFormat = `${minutes}:${seconds}`;
-    return hours > 0 ? `${hours}:${timeInActualFormat}` : timeInActualFormat;
+    return Number(hours) > 0 ? `${hours}:${timeInActualFormat}` : timeInActualFormat;
   };
   return (
     <div className="player">
       <video src={film?.videoLink} className="player__video" poster={film?.posterImage} ref={playerRef}></video>
+      {/* eslint-disable-next-line @typescript-eslint/restrict-template-expressions */}
       <Link to={`/films/${film?.id}`} type="button" className="player__exit">Exit</Link>
       <div className="player__controls">
         <div className="player__controls-row">
@@ -65,7 +67,7 @@ function PlayerPage(): JSX.Element {
           <div className="player__time-value">{getTimeLeft()}</div>
         </div>
         <div className="player__controls-row">
-          <button type="button" className="player__play" onClick={clickPlayButtonHandler} data-testid='player-play'>
+          <button type="button" className="player__play" onClick={handlePlayButtonClick} data-testid='player-play'>
             {isPlaying ? (
               <Fragment>
                 <svg viewBox="0 0 14 21" width="14" height="21">
@@ -83,7 +85,7 @@ function PlayerPage(): JSX.Element {
             )}
           </button>
           <div className="player__name">Transpotting</div>
-          <button type="button" className="player__full-screen" onClick={fullscreenHandler}>
+          <button type="button" className="player__full-screen" onClick={handleFullscreenClick}>
             <svg viewBox="0 0 27 27" width="27" height="27">
               <use xlinkHref="#full-screen"></use>
             </svg>

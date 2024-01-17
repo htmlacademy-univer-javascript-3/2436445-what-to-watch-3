@@ -26,7 +26,7 @@ function MainPage(): JSX.Element {
   const films = useAppSelector((state) => state[ReducerType.Main].films);
   const isLoading = useAppSelector((state) => state[ReducerType.Main].dataIsLoading);
   const dispatch = useAppDispatch();
-  const favoriteAddHandler = () => {
+  const handleFavoriteAdd = () => {
     dispatch(changePromoFavoriteStatus({
       filmId: promoFilm?.id || NaN,
       status: promoFilm?.isFavorite ? 0 : 1
@@ -44,7 +44,7 @@ function MainPage(): JSX.Element {
   }, [dispatch, authorizationStatus]);
   const filmsCurrentGenre = GetFilmsCurrentGenre(films, genre);
   const [filmListCount, addFilmListCount] = useState(LIST_STEP_COUNT),
-    showMoreClickHandler = () => {
+    handleShowMoreClick = () => {
       addFilmListCount(filmListCount + LIST_STEP_COUNT);
     };
   if (isLoading || !promoFilm) {
@@ -80,7 +80,7 @@ function MainPage(): JSX.Element {
                   <span>Play</span>
                 </Link>
                 {authorizationStatus === AuthorizationStatus.Authorized && (
-                  <Link to={AppRoute.MyList} className="btn btn--list film-card__button" onClick={favoriteAddHandler}>
+                  <Link to={AppRoute.MyList} className="btn btn--list film-card__button" onClick={handleFavoriteAdd}>
                     {promoFilm?.isFavorite ? (
                       <svg viewBox="0 0 19 20" width="19" height="20">
                         <use xlinkHref="#in-list"></use>
@@ -104,7 +104,7 @@ function MainPage(): JSX.Element {
           <h2 className="catalog__title visually-hidden">Catalog</h2>
           <GenresCatalog genres={GetAllExistingGenres(films)} selectedGenre={genre} setFilmListCount={addFilmListCount}/>
           <FilmList filmList={filmsCurrentGenre.slice(0, filmListCount)} />
-          {filmsCurrentGenre.length > filmListCount && <ShowMore onClick={showMoreClickHandler}/>}
+          {filmsCurrentGenre.length > filmListCount && <ShowMore onClick={handleShowMoreClick}/>}
         </section>
         <Footer/>
       </div>

@@ -6,13 +6,13 @@ import {MemoryRouter} from 'react-router-dom';
 import thunk from 'redux-thunk';
 import {films} from '../../mocks/films';
 import {createAPI} from '../../services/api';
-import {StateType} from '../../types/StateType';
+import {State} from '../../types/state.ts';
 import {AuthorizationStatus, ReducerType} from '../../consts';
 import PlayerPage from './player-page';
 
 const api = createAPI();
 const middlewares = [thunk.withExtraArgument(api)];
-const mockStore = configureMockStore<StateType, Action, ThunkDispatch<StateType, typeof api, Action>>(middlewares);
+const mockStore = configureMockStore<State, Action, ThunkDispatch<State, typeof api, Action>>(middlewares);
 const mockFilms = films;
 const mockFilm = films[0];
 
@@ -48,6 +48,7 @@ describe('Player page', () => {
     expect(screen.getByText(/Exit/i)).toBeInTheDocument();
   });
 
+  // eslint-disable-next-line @typescript-eslint/require-await
   it('should play and stop when button clicked', async () => {
     render(
       <Provider store={store}>

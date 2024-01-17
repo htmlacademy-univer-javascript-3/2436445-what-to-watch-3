@@ -1,4 +1,4 @@
-import {FimlType} from '../../types/FilmType';
+import {FimlType} from '../../types/film.ts';
 import {useState} from 'react';
 import {Tab} from '../../consts';
 import OverviewTab from './overview-tab';
@@ -6,7 +6,7 @@ import DetailsTab from './details-tab';
 import ReviewsTab from './reviews-tab';
 
 type TabsProps = {
-  film: FimlType,
+  film: FimlType;
 };
 
 function Tabs(props: TabsProps): JSX.Element {
@@ -15,6 +15,7 @@ function Tabs(props: TabsProps): JSX.Element {
     <div className="film-card__desc">
       <nav className="film-nav film-card__nav">
         <ul className="film-nav__list">
+          {/* eslint-disable-next-line @typescript-eslint/restrict-template-expressions */}
           <li className={`film-nav__item ${currentTab === Tab.OVERVIEW && 'film-nav__item--active'}`}>
             <a href="#overviews" className="film-nav__link" data-testid='overview-tab' onClick={
               (evt) => {
@@ -26,6 +27,7 @@ function Tabs(props: TabsProps): JSX.Element {
               {Tab.OVERVIEW}
             </a>
           </li>
+          {/* eslint-disable-next-line @typescript-eslint/restrict-template-expressions */}
           <li className={`film-nav__item ${currentTab === Tab.DETAILS && 'film-nav__item--active'}`}>
             <a href="#details" className="film-nav__link" data-testid='details-tab' onClick={
               (evt) => {
@@ -37,6 +39,7 @@ function Tabs(props: TabsProps): JSX.Element {
               {Tab.DETAILS}
             </a>
           </li>
+          {/* eslint-disable-next-line @typescript-eslint/restrict-template-expressions */}
           <li className={`film-nav__item ${currentTab === Tab.REVIEWS && 'film-nav__item--active'}`}>
             <a href="#reviews" className="film-nav__link" data-testid='reviews-tab' onClick={
               (evt) => {

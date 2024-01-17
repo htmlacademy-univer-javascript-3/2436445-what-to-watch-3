@@ -1,6 +1,15 @@
 import {useAppSelector} from '../../hooks';
 import {ReducerType} from '../../consts';
 
+
+function shortDate(reviewDate: string): string {
+  const date = new Date(reviewDate);
+  return (`${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`);
+}
+function longDate(reviewDate: string): string {
+  const date = new Date(reviewDate);
+  return (`${date.toLocaleString('eng', {month: 'long'})} ${date.getDate()}, ${date.getFullYear()}`);
+}
 function ReviewsTab(): JSX.Element {
   const reviews = useAppSelector((state) => state[ReducerType.Film].comments);
   return (
@@ -29,12 +38,3 @@ function ReviewsTab(): JSX.Element {
 }
 
 export default ReviewsTab;
-
-function shortDate(reviewDate: string): string {
-  const date = new Date(reviewDate);
-  return (`${date.getFullYear()}-${date.getMonth().toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`);
-}
-function longDate(reviewDate: string): string {
-  const date = new Date(reviewDate);
-  return (`${date.toLocaleString('eng', {month: 'long'})} ${date.getDate()}, ${date.getFullYear()}`);
-}
