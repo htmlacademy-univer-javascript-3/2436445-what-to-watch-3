@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { useEffect } from 'react';
-import { FimlType } from '../../types/FilmType';
+import { FimlType } from '../../types/film.ts';
 
 type VideoplayerProps = {
   film: FimlType;
@@ -18,8 +18,7 @@ function Videoplayer(props: VideoplayerProps): JSX.Element {
       if (props.isPlaying) {
         videoplayerRef.current.play();
         //TODO: videoplayerRef.current не определяется вначале при запуске походу
-      }
-      else {
+      } else {
         videoplayerRef.current.load();
       }
     }

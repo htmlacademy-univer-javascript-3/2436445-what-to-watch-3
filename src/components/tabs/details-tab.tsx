@@ -1,4 +1,4 @@
-import {FimlType} from '../../types/FilmType';
+import {FimlType} from '../../types/film.ts';
 import {Fragment} from 'react';
 
 type DetailsTabProps = {

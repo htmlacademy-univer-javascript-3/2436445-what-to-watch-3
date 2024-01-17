@@ -3,7 +3,7 @@ import Logo from '../../components/logo/logo';
 import Footer from '../../components/footer/footer';
 import {Navigate, useNavigate} from 'react-router-dom';
 import {AppRoute, AuthorizationStatus, ReducerType} from '../../consts';
-import {AuthorizationData} from '../../types/AuthorizationData';
+import {Auth} from '../../types/auth.ts';
 import {loginAction} from '../../store/api-actions';
 import {useAppDispatch, useAppSelector} from '../../hooks';
 
@@ -12,7 +12,7 @@ function SignInPage(): JSX.Element {
   const [password, setPassword] = useState<string>('');
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const onSubmit = (authData: AuthorizationData) => {
+  const onSubmit = (authData: Auth) => {
     dispatch(loginAction(authData));
     navigate(AppRoute.Main);
   };

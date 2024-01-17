@@ -1,10 +1,10 @@
 import React, {Dispatch, SetStateAction} from 'react';
 import Genre from '../genre/genre';
-import {FimlType} from '../../types/FilmType';
+import {FimlType} from '../../types/film.ts';
 
 type GenresCatalogProps = {
-  genres: string[],
-  selectedGenre: string,
+  genres: string[];
+  selectedGenre: string;
   setFilmListCount: Dispatch<SetStateAction<number>>;
 };
 

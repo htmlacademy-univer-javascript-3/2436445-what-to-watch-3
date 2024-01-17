@@ -4,7 +4,7 @@ import {configureMockStore} from '@jedmao/redux-mock-store';
 import {films} from '../mocks/films';
 import reviews from '../mocks/reviews';
 import {Action} from '@reduxjs/toolkit';
-import {StateType} from '../types/StateType';
+import {State} from '../types/state.ts';
 import {
   changeFilmFavoriteStatus,
   checkAuthAction,
@@ -12,7 +12,7 @@ import {
   getFilmReviews, getPromoFilm,
   getSimilarFilms, loginAction, logoutAction, postFilmReview,
 } from './api-actions';
-import {AuthorizationData} from '../types/AuthorizationData';
+import {Auth} from '../types/auth.ts';
 import {createAPI} from '../services/api';
 
 describe('async actions', () => {
@@ -22,7 +22,7 @@ describe('async actions', () => {
   const mockFilm = films[0];
   const mockFilms = films;
   const mockReviews = reviews;
-  const mockStore = configureMockStore<StateType, Action, ThunkDispatch<StateType, typeof api, Action>>(middlewares);
+  const mockStore = configureMockStore<State, Action, ThunkDispatch<State, typeof api, Action>>(middlewares);
 
   it('authorization status is Authorized when server returned 200', async () => {
     const store = mockStore();
@@ -31,6 +31,7 @@ describe('async actions', () => {
       .reply(200, []);
     expect(store.getActions()).toEqual([]);
     await store.dispatch(checkAuthAction());
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     const actions = store.getActions().map(({ type }) => type);
     expect(actions).toEqual([
       checkAuthAction.pending.type,
@@ -39,12 +40,13 @@ describe('async actions', () => {
   });
 
   it('should dispatch login when POST /login', async () => {
-    const fakeUser: AuthorizationData = { email: 'mail@mail.com', password: 'qwerty123' };
+    const fakeUser: Auth = { email: 'mail@mail.com', password: 'qwerty123' };
     mockAPI
       .onPost('/login')
       .reply(200, { token: 'secret' });
     const store = mockStore();
     await store.dispatch(loginAction(fakeUser));
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     const actions = store.getActions().map(({ type }) => type);
     expect(actions).toEqual([
       loginAction.pending.type,
@@ -58,6 +60,7 @@ describe('async actions', () => {
       .reply(204);
     const store = mockStore();
     await store.dispatch(logoutAction());
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     const actions = store.getActions().map(({ type }) => type);
     expect(actions).toEqual([
       logoutAction.pending.type,
@@ -71,6 +74,7 @@ describe('async actions', () => {
       .reply(200, mockFilms);
     const store = mockStore();
     await store.dispatch(fetchFilmsAction());
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     const actions = store.getActions().map(({ type }) => type);
     expect(actions).toEqual([
       fetchFilmsAction.pending.type,
@@ -84,6 +88,7 @@ describe('async actions', () => {
       .reply(200, mockFilm);
     const store = mockStore();
     await store.dispatch(getPromoFilm());
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     const actions = store.getActions().map(({ type }) => type);
     expect(actions).toEqual([
       getPromoFilm.pending.type,
@@ -97,6 +102,7 @@ describe('async actions', () => {
       .reply(200, mockFilm);
     const store = mockStore();
     await store.dispatch(getFilm('1'));
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     const actions = store.getActions().map(({ type }) => type);
     expect(actions).toEqual([
       getFilm.pending.type,
@@ -110,6 +116,7 @@ describe('async actions', () => {
       .reply(200, mockFilms);
     const store = mockStore();
     await store.dispatch(getSimilarFilms('1'));
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     const actions = store.getActions().map(({ type }) => type);
     expect(actions).toEqual([
       getSimilarFilms.pending.type,
@@ -123,6 +130,7 @@ describe('async actions', () => {
       .reply(200, mockReviews);
     const store = mockStore();
     await store.dispatch(getFilmReviews('1'));
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     const actions = store.getActions().map(({ type }) => type);
     expect(actions).toEqual([
       getFilmReviews.pending.type,
@@ -144,6 +152,7 @@ describe('async actions', () => {
       .reply(200);
     const store = mockStore();
     await store.dispatch(postFilmReview(postData));
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     const actions = store.getActions().map(({ type }) => type);
     expect(actions).toEqual([
       postFilmReview.pending.type,
@@ -157,6 +166,7 @@ describe('async actions', () => {
       .reply(200, mockFilms);
     const store = mockStore();
     await store.dispatch(fetchFavoriteFilms());
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     const actions = store.getActions().map(({ type }) => type);
     expect(actions).toEqual([
       fetchFavoriteFilms.pending.type,
@@ -174,6 +184,7 @@ describe('async actions', () => {
       .reply(200);
     const store = mockStore();
     await store.dispatch(changeFilmFavoriteStatus(postData));
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     const actions = store.getActions().map(({ type }) => type);
     expect(actions).toEqual([
       changeFilmFavoriteStatus.pending.type,

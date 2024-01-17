@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { dropToken, saveToken } from '../../services/token';
-import {UserState} from '../../types/StateType';
+import {UserState} from '../../types/state.ts';
 import {AuthorizationStatus, ReducerType} from '../../consts';
 import {checkAuthAction, loginAction, logoutAction} from '../api-actions';
 

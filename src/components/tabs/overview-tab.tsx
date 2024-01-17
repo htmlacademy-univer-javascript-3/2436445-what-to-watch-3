@@ -1,10 +1,32 @@
 import {Fragment} from 'react';
-import {FimlType} from '../../types/FilmType';
+import {FimlType} from '../../types/film.ts';
 
 type OverviewTabProps = {
   film: FimlType;
 }
 
+enum Rating {
+  Bad = 'Bad',
+  Normal = 'Normal',
+  Good = 'Good',
+  VeryGood = 'VeryGood',
+  Awesome = 'Awesome'
+}
+function getRatingLevel(rating: number): string {
+  if (rating < 3) {
+    return Rating.Bad;
+  }
+  if (rating < 5) {
+    return Rating.Normal;
+  }
+  if (rating < 8) {
+    return Rating.Good;
+  }
+  if (rating < 10) {
+    return Rating.VeryGood;
+  }
+  return Rating.Awesome;
+}
 function OverviewTab(props: OverviewTabProps): JSX.Element {
   const {film} = props;
   return (
@@ -33,18 +55,4 @@ function OverviewTab(props: OverviewTabProps): JSX.Element {
 
 export default OverviewTab;
 
-function getRatingLevel(rating: number): string {
-  if (rating < 3) {
-    return 'Bad';
-  }
-  if (rating < 5) {
-    return 'Normal';
-  }
-  if (rating < 8) {
-    return 'Good';
-  }
-  if (rating < 10) {
-    return 'Very good';
-  }
-  return 'Awesome';
-}
+

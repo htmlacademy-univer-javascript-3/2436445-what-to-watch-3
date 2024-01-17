@@ -14,7 +14,7 @@ import {setFavoriteFilmsLength} from '../../store/action';
 function FilmPage(): JSX.Element {
   const currentFilmId = Number(useParams().id);
   const currentFilm = useAppSelector((state) => state[ReducerType.Film].film);
-  const similarFilms = useAppSelector((state) => state[ReducerType.Film].similar);
+  const similarFilms = useAppSelector((state) => state[ReducerType.Film].similarFilms);
   const authorizationStatus = useAppSelector((state) => state[ReducerType.User].authorizationStatus);
   const favoriteFilmsLength = useAppSelector((state) => state.mainReducer.favoriteFilmsLength);
   const dispatch = useAppDispatch();
@@ -27,7 +27,7 @@ function FilmPage(): JSX.Element {
     }
   }, [currentFilmId, dispatch, authorizationStatus]);
 
-  const favoriteAddHandler = () => {
+  const handleFavoriteAdd = () => {
     dispatch(
       changeFilmFavoriteStatus({
         filmId: currentFilm?.id || NaN,
@@ -70,7 +70,7 @@ function FilmPage(): JSX.Element {
                   <span>Play</span>
                 </Link>
                 {authorizationStatus === AuthorizationStatus.Authorized && (
-                  <Link to={AppRoute.MyList} type='button' className='btn btn--list film-card__button' onClick={favoriteAddHandler}>
+                  <Link to={AppRoute.MyList} type='button' className='btn btn--list film-card__button' onClick={handleFavoriteAdd}>
                     {currentFilm?.isFavorite ? (
                       <svg viewBox="0 0 19 20" width="19" height="20">
                         <use xlinkHref="#in-list"></use>

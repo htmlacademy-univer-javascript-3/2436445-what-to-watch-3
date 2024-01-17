@@ -1,7 +1,7 @@
 import {filmId1, films} from '../../mocks/films';
 import {filmReducer} from './film-reducer';
 import reviews from '../../mocks/reviews';
-import {FilmState} from '../../types/StateType';
+import {FilmState} from '../../types/state.ts';
 import {changeFilmFavoriteStatus, getFilm, getFilmReviews, getSimilarFilms} from '../api-actions';
 
 const testFilm = films[0];
@@ -14,7 +14,7 @@ describe('film-reducer', () => {
     state = {
       film: null,
       comments: [],
-      similar: [],
+      similarFilms: [],
     };
   });
 
@@ -23,7 +23,7 @@ describe('film-reducer', () => {
       .toEqual({
         film: null,
         comments: [],
-        similar: [],
+        similarFilms: [],
       });
   });
 
@@ -35,7 +35,7 @@ describe('film-reducer', () => {
 
   describe('getSimilarFilms test', () => {
     it('should load similar films on fulfilled', () => {
-      expect(filmReducer.reducer(state, { type: getSimilarFilms.fulfilled.type, payload: testFilms }).similar)
+      expect(filmReducer.reducer(state, { type: getSimilarFilms.fulfilled.type, payload: testFilms }).similarFilms)
         .toEqual(testFilms);
     });
   });

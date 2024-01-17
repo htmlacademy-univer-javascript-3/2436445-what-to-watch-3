@@ -1,7 +1,7 @@
 import React from 'react';
 
 type ShowMoreProps = {
-  onClick: () => void,
+  onClick: () => void;
 };
 
 function ShowMore(props: ShowMoreProps): JSX.Element {
